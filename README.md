@@ -1,1 +1,1 @@
-# makeMeBetter_mandalart_be
+# make-me-better-mandalart-backend
