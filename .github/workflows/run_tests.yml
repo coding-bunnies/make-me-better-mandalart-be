@@ -32,7 +32,9 @@ jobs:
   
       - name: Run Tests
         env:
+          laughing: ${{ env.HAHA }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           echo $SECRET_KEY
+          echo $laughing
           python manage.py test
