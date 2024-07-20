@@ -29,7 +29,11 @@ jobs:
           python-version: '3.12'
           cache: 'pip' # caching pip dependencies
       - run: pip install -r requirements.txt
-
+      
+      - name: Set Environment Variable
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
       # Runs a set of commands using the runners shell
+      
       - name: Run Tests
         run: python manage.py test
