@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class AuthConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'auth'
-    label = 'better_auth'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "auth"
+    label = "auth_system"  # prevent duplicated with django
