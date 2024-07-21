@@ -12,6 +12,7 @@ class Board(TimeStamped):
         on_delete=models.CASCADE,
         related_name="boards",
     )
+    achievement = models.PositiveIntegerField(default=0)
     start_at = models.DateField()
     end_at = models.DateField()
 
@@ -60,6 +61,8 @@ class Action(TimeStamped):
     cycle = models.CharField(max_length=16, choices=Cycle.choices)
     goal_unit = models.PositiveIntegerField()
     action_unit = models.PositiveIntegerField()
+    current_unit = models.PositiveIntegerField(default=0)
+    achievement = models.PositiveIntegerField(default=0)
     unit_name = models.CharField(max_length=8)
 
     def __str__(self):
@@ -69,3 +72,8 @@ class Action(TimeStamped):
         db_table = "action"
         verbose_name = "Action"
         verbose_name_plural = "Actions"
+
+    def increase_achievement(self):
+        self.current_unit += self.action_unit
+        self.achievement = self.current_unit / self.goal_unit * 100
+        return self.save()

@@ -36,6 +36,7 @@ class ActionSerializer(serializers.ModelSerializer):
             "goal_unit",
             "action_unit",
             "unit_name",
+            "achievement",
         )
 
 
@@ -62,4 +63,5 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
             "start_at",
             "end_at",
             "missions",
+            "achievement",
         )

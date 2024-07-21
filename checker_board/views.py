@@ -35,3 +35,9 @@ class ActionView(ModelViewSet):
     serializer_class = ActionSerializer
     queryset = Action.objects.all()
     permission_classes = (IsAuthenticated,)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.increase_achievement()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
