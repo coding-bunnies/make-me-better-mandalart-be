@@ -39,3 +39,33 @@ class Mission(TimeStamped):
         db_table = "mission"
         verbose_name = "Mission"
         verbose_name_plural = "Missions"
+
+
+class Cycle(models.TextChoices):
+    ONCE = "once", "Once"
+    DAILY = "daily", "Daily"
+    WEEKLY = "weekly", "Weekly"
+    MONTHLY = "monthly", "Monthly"
+    YEARLY = "yearly", "Yearly"
+
+
+class Action(TimeStamped):
+    title = models.CharField(max_length=16)
+    mission = models.ForeignKey(
+        Mission,
+        on_delete=models.CASCADE,
+        related_name="actions",
+    )
+    completed_at = models.DateTimeField(blank=True, null=True)
+    cycle = models.CharField(max_length=16, choices=Cycle.choices)
+    goal_unit = models.PositiveIntegerField()
+    action_unit = models.PositiveIntegerField()
+    unit_name = models.CharField(max_length=8)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = "action"
+        verbose_name = "Action"
+        verbose_name_plural = "Actions"

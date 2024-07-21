@@ -2,7 +2,8 @@ from django.urls import reverse
 from rest_framework import status
 
 from auth.factories import AccountFactory
-from checker_board.factories import BoardFactory, MissionFactory
+from checker_board.factories import BoardFactory, MissionFactory, ActionFactory
+from checker_board.models import Cycle
 from core.tests import BaseAPITestCase
 
 
@@ -186,6 +187,111 @@ class MissionViewTest(BaseAPITestCase):
             path=f"{self.detail_url}",
             data={
                 "title": "Updated Mission",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_destroy(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.delete(path=f"{self.detail_url}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_destroy_unauthenticated(self):
+        response = self.client.delete(path=f"{self.detail_url}")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class ActionViewTest(BaseAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = AccountFactory()
+        cls.board = BoardFactory(user=cls.user)
+        cls.mission = MissionFactory(board=cls.board)
+        cls.action = ActionFactory(mission=cls.mission)
+        cls.list_url = reverse("action-list")
+        cls.detail_url = reverse("action-detail", args=[cls.action.id])
+
+    def test_get_list(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_list_unauthenticated(self):
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_post_create(self):
+        self.get_authenticated_user(user=self.user)
+
+        data = {
+            "title": "달리기",
+            "mission_id": self.mission.id,
+            "cycle": Cycle.ONCE,
+            "goal_unit": 100,
+            "action_unit": 10,
+            "unit_name": "km",
+        }
+
+        response = self.client.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_create_unauthenticated(self):
+        data = {
+            "title": "Test Action",
+            "mission": self.mission.id,
+        }
+
+        response = self.client.post(self.list_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_put_update(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.put(
+            path=f"{self.detail_url}",
+            data={
+                "title": "달리기",
+                "mission_id": self.mission.id,
+                "cycle": Cycle.ONCE,
+                "goal_unit": 100,
+                "action_unit": 10,
+                "unit_name": "km",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_put_update_unauthenticated(self):
+        response = self.client.put(
+            path=f"{self.detail_url}",
+            data={
+                "title": "Updated Action",
+                "mission": self.mission.id,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_patch_partial_update(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.patch(
+            path=f"{self.detail_url}",
+            data={
+                "title": "Updated Action",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_patch_partial_update_unauthenticated(self):
+        response = self.client.patch(
+            path=f"{self.detail_url}",
+            data={
+                "title": "Updated Action",
             },
         )
 

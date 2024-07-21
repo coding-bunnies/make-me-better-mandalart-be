@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from checker_board.models import Board, Mission
+from checker_board.models import Board, Mission, Action
 
 
 class BoardSerializer(serializers.ModelSerializer):
@@ -20,4 +20,20 @@ class MissionSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "board_id",
+        )
+
+
+class ActionSerializer(serializers.ModelSerializer):
+    mission_id = serializers.IntegerField()
+
+    class Meta:
+        model = Action
+        fields = (
+            "id",
+            "title",
+            "mission_id",
+            "cycle",
+            "goal_unit",
+            "action_unit",
+            "unit_name",
         )
