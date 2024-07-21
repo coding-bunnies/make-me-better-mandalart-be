@@ -4,15 +4,29 @@ from rest_framework import status
 from auth.factories import AccountFactory
 from checker_board.factories import BoardFactory, MissionFactory, ActionFactory
 from checker_board.models import Cycle
+from core.const import DEFAULT_MISSION_COUNT
 from core.tests import BaseAPITestCase
 
 
-# Create your tests here.
-class BoardViewTest(BaseAPITestCase):
+class CheckerBoardBaseTestCase(BaseAPITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = AccountFactory()
-        cls.board = BoardFactory(user=cls.user)
+        cls.board = BoardFactory.create(user=cls.user)
+        cls.missions = MissionFactory.create_batch(
+            size=DEFAULT_MISSION_COUNT, board=cls.board
+        )
+        cls.actions = [
+            ActionFactory.create_batch(size=DEFAULT_MISSION_COUNT, mission=mission)
+            for mission in cls.missions
+        ]
+
+
+# Create your tests here.
+class BoardViewTest(CheckerBoardBaseTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
         cls.list_url = reverse("board-list")
         cls.detail_url = reverse("board-detail", args=[cls.board.id])
 
@@ -24,6 +38,16 @@ class BoardViewTest(BaseAPITestCase):
 
     def test_get_list_unauthenticated(self):
         response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_retrieve(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_retrieve_unauthenticated(self):
+        response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_create(self):
@@ -107,14 +131,13 @@ class BoardViewTest(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class MissionViewTest(BaseAPITestCase):
+class MissionViewTest(CheckerBoardBaseTestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = AccountFactory()
-        cls.board = BoardFactory(user=cls.user)
-        cls.mission = MissionFactory(board=cls.board)
+        super().setUpTestData()
+
         cls.list_url = reverse("mission-list")
-        cls.detail_url = reverse("mission-detail", args=[cls.mission.id])
+        cls.detail_url = reverse("mission-detail", args=[cls.missions[0].id])
 
     def test_get_list(self):
         self.get_authenticated_user(user=self.user)
@@ -124,6 +147,16 @@ class MissionViewTest(BaseAPITestCase):
 
     def test_get_list_unauthenticated(self):
         response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_retrieve(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_retrieve_unauthenticated(self):
+        response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_create(self):
@@ -203,24 +236,32 @@ class MissionViewTest(BaseAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class ActionViewTest(BaseAPITestCase):
+class ActionViewTest(CheckerBoardBaseTestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = AccountFactory()
-        cls.board = BoardFactory(user=cls.user)
-        cls.mission = MissionFactory(board=cls.board)
-        cls.action = ActionFactory(mission=cls.mission)
+        super().setUpTestData()
         cls.list_url = reverse("action-list")
-        cls.detail_url = reverse("action-detail", args=[cls.action.id])
+        cls.detail_url = reverse("action-detail", args=[cls.actions[0][0].id])
 
     def test_get_list(self):
         self.get_authenticated_user(user=self.user)
 
         response = self.client.get(self.list_url)
+        print(f"{response.status_code} {response.data=}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_list_unauthenticated(self):
         response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_retrieve(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_retrieve_unauthenticated(self):
+        response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_create(self):
@@ -228,7 +269,7 @@ class ActionViewTest(BaseAPITestCase):
 
         data = {
             "title": "달리기",
-            "mission_id": self.mission.id,
+            "mission_id": self.missions[0].id,
             "cycle": Cycle.ONCE,
             "goal_unit": 100,
             "action_unit": 10,
@@ -241,7 +282,7 @@ class ActionViewTest(BaseAPITestCase):
     def test_post_create_unauthenticated(self):
         data = {
             "title": "Test Action",
-            "mission": self.mission.id,
+            "mission": self.missions[0].id,
         }
 
         response = self.client.post(self.list_url, data=data)
@@ -254,7 +295,7 @@ class ActionViewTest(BaseAPITestCase):
             path=f"{self.detail_url}",
             data={
                 "title": "달리기",
-                "mission_id": self.mission.id,
+                "mission_id": self.missions[0].id,
                 "cycle": Cycle.ONCE,
                 "goal_unit": 100,
                 "action_unit": 10,
@@ -269,7 +310,7 @@ class ActionViewTest(BaseAPITestCase):
             path=f"{self.detail_url}",
             data={
                 "title": "Updated Action",
-                "mission": self.mission.id,
+                "mission": self.missions[0].id,
             },
         )
 

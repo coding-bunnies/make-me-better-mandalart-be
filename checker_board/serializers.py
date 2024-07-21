@@ -37,3 +37,29 @@ class ActionSerializer(serializers.ModelSerializer):
             "action_unit",
             "unit_name",
         )
+
+
+class MissionRetrieveSerializer(serializers.ModelSerializer):
+    actions = ActionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Mission
+        fields = (
+            "id",
+            "title",
+            "actions",
+        )
+
+
+class BoardRetrieveSerializer(serializers.ModelSerializer):
+    missions = MissionRetrieveSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Board
+        fields = (
+            "id",
+            "title",
+            "start_at",
+            "end_at",
+            "missions",
+        )
