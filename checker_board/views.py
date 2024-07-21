@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -17,6 +18,7 @@ class BoardView(ModelViewSet):
     queryset = Board.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    @extend_schema(responses=BoardRetrieveSerializer)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = BoardRetrieveSerializer(instance)

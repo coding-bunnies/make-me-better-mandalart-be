@@ -50,6 +50,9 @@ DEFAULT_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -58,7 +61,9 @@ DEFAULT_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "dj_rest_auth.registration",
+    "drf_spectacular",
 ]
+
 
 CUSTOM_APPS = [
     "auth",
@@ -66,7 +71,7 @@ CUSTOM_APPS = [
     "core",
 ]
 
-INSTALLED_APPS = DEFAULT_APPS + CUSTOM_APPS
+INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -156,6 +161,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 REST_AUTH = {
@@ -165,3 +171,10 @@ REST_AUTH = {
 
 AUTH_USER_MODEL = "auth_system.Account"
 AUTHENTICATION_METHOD = "email"
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Checker Board API",
+    "DESCRIPTION": "만다라트에서 영감을 받은 체크리스트 앱 API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
