@@ -22,3 +22,20 @@ class Board(TimeStamped):
         db_table = "board"
         verbose_name = "Board"
         verbose_name_plural = "Boards"
+
+
+class Mission(TimeStamped):
+    title = models.CharField(max_length=16)
+    board = models.ForeignKey(
+        Board,
+        on_delete=models.CASCADE,
+        related_name="missions",
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = "mission"
+        verbose_name = "Mission"
+        verbose_name_plural = "Missions"
