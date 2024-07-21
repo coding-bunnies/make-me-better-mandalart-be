@@ -62,6 +62,8 @@ DEFAULT_APPS = [
 
 CUSTOM_APPS = [
     "auth",
+    "checker_board",
+    "core",
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + CUSTOM_APPS

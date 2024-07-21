@@ -20,6 +20,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # TODO: Add the url 'api' to the urlpatterns list
     path("auth/", include("dj_rest_auth.urls")),
     path("auth/signup/", include("dj_rest_auth.registration.urls")),
+    path("checker/", include("checker_board.urls")),
 ]
