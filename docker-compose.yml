@@ -20,7 +20,6 @@ services:
       - TZ=Asia/Seoul
     depends_on:
       - backend
-      - mariadb
 
   backend:
     container_name: backend
@@ -38,12 +37,7 @@ services:
       - bash
       - -c
       - |
-        /wait-for-it.sh mariadb:3306 -t 10
         python manage.py collectstatic --noinput
         gunicorn --bind 0:8000 config.wsgi:application
 
     tty: true
-    depends_on:
-      - mariadb
-      - rabbitmq
-      - celery_worker
