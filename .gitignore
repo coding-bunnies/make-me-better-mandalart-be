@@ -8,4 +8,7 @@
 /dataSources.local.xml
 
 .idea/
+venv/
+
+db.sqlite3
 .env

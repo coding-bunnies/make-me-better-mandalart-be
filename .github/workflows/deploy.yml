@@ -1,0 +1,33 @@
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    environment: better-action
+
+    steps:
+      - name: connect ec2
+        uses: appleboy/ssh-action@master
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          envs: SECRET_KEY
+          script: |
+            cd /home/ec2-user/make-me-better-mandalart-be
+            git pull
+            echo "< pulled completed >"
+            pip install -r requirements.txt
+            echo "< requirements.txt installed >"
+            python manage.py collectstatic --noinput
+            gunicorn --bind 0:8000 config.wsgi:application
