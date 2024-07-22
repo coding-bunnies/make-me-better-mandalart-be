@@ -31,4 +31,4 @@ jobs:
             pip install -r requirements.txt
             echo "< requirements.txt installed >"
             python manage.py collectstatic --noinput
-            gunicorn --bind 0:8000 config.wsgi:application &
+            sudo systemctl restart nginx
