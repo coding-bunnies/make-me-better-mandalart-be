@@ -1,0 +1,49 @@
+version: '3.4'
+
+volumes:
+  db_data: { }
+  static_data: { }
+  redis_data: { }
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:stable
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_data:/make-me-better-mandalart-be/static/
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - backend
+      - mariadb
+
+  backend:
+    container_name: backend
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - type: bind
+        source: ./apps/
+        target: /make-me-better-mandalart-be
+      - static_data:/make-me-better-mandalart-be/static
+    ports:
+      - '8000:8000'
+    command:
+      - bash
+      - -c
+      - |
+        /wait-for-it.sh mariadb:3306 -t 10
+        python manage.py collectstatic --noinput
+        gunicorn --bind 0:8000 config.wsgi:application
+
+    tty: true
+    depends_on:
+      - mariadb
+      - rabbitmq
+      - celery_worker
