@@ -28,7 +28,7 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ./apps/
+        source: ./
         target: /make-me-better-mandalart-be
       - static_data:/make-me-better-mandalart-be/static
     ports:
