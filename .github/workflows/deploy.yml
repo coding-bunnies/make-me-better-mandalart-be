@@ -27,6 +27,7 @@ jobs:
             cd /home/ec2-user/make-me-better-mandalart-be
             git pull
             echo "< pulled completed >"
+            source ./.venv/bin/activate
             pip install -r requirements.txt
             echo "< requirements.txt installed >"
             python manage.py collectstatic --noinput
