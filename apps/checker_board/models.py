@@ -13,8 +13,10 @@ class Board(TimeStamped):
         on_delete=models.CASCADE,
         related_name="boards",
     )
-    daily_goal = models.PositiveIntegerField(default=0)
-    achievement = models.PositiveIntegerField(default=0)
+    daily_goal = models.PositiveIntegerField(help_text="일일 목표치", default=0)
+    total_percentage = models.DecimalField(
+        help_text="전체 달성률", default=0, max_digits=3, decimal_places=2
+    )
     start_at = models.DateField()
     end_at = models.DateField()
 
@@ -25,6 +27,15 @@ class Board(TimeStamped):
         db_table = "board"
         verbose_name = "Board"
         verbose_name_plural = "Boards"
+
+    def update_total_percentage(self, action):
+        total_period = (self.end_at - self.start_at).days
+        action_period = action.period or 1
+
+        self.total_percentage += (
+            action.current_unit / action.goal_unit * action_period / total_period
+        )
+        self.save()
 
 
 class Mission(TimeStamped):
@@ -44,12 +55,12 @@ class Mission(TimeStamped):
         verbose_name_plural = "Missions"
 
 
-class Cycle(models.TextChoices):
-    ONCE = "once", "Once"
-    DAILY = "daily", "Daily"
-    WEEKLY = "weekly", "Weekly"
-    MONTHLY = "monthly", "Monthly"
-    YEARLY = "yearly", "Yearly"
+class Period(models.IntegerChoices):
+    ONCE = 0
+    DAILY = 1
+    WEEKLY = 7
+    MONTHLY = 30
+    YEARLY = 365
 
 
 class Action(TimeStamped):
@@ -66,10 +77,10 @@ class Action(TimeStamped):
         related_name="actions",
     )
     completed_at = models.DateTimeField(blank=True, null=True)
-    cycle = models.CharField(max_length=16, choices=Cycle.choices)
-    goal_unit = models.PositiveIntegerField()
-    action_unit = models.PositiveIntegerField()
-    current_unit = models.PositiveIntegerField(default=0)
+    period = models.CharField(max_length=16, choices=Period.choices)
+    goal_unit = models.PositiveIntegerField(help_text="목표치")
+    action_unit = models.PositiveIntegerField(help_text="수행 단위")
+    current_unit = models.PositiveIntegerField(help_text="실제 수행치", default=0)
     achievement = models.PositiveIntegerField(default=0)
     unit_name = models.CharField(max_length=8)
     position = models.PositiveIntegerField(null=True, blank=True)
@@ -88,3 +99,22 @@ class Action(TimeStamped):
         self.current_unit += self.action_unit
         self.achievement = self.current_unit / self.goal_unit * 100
         return self.save()
+
+
+class DailyStatistics(TimeStamped):
+    """중간에 아이템을 하나 삭제하게 되더라도, 기존에 쌓아둔 확률을 유지하기 위해 전체 달성률을 매일 계산하여 저장합니다."""
+
+    board = models.ForeignKey(
+        Board,
+        on_delete=models.CASCADE,
+        related_name="statistics",
+    )
+
+    goal = models.PositiveIntegerField(help_text="일일 목표치", default=0)
+    achievement = models.PositiveIntegerField(help_text="실제 달성 횟수", default=0)
+    percentage = models.PositiveIntegerField(help_text="일일 달성률", default=0)
+
+    class Meta:
+        db_table = "statistics"
+        verbose_name = "Statistics"
+        verbose_name_plural = "Statistics"

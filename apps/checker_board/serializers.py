@@ -35,7 +35,7 @@ class ActionSerializer(serializers.ModelSerializer):
             "mission_id",
             "position",
             "title",
-            "cycle",
+            "period",
             "goal_unit",
             "action_unit",
             "current_unit",
@@ -69,5 +69,6 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
             "start_at",
             "end_at",
             "missions",
-            "achievement",
+            "daily_goal",
+            "total_percentage",
         )
