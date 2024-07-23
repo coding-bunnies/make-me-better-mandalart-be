@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+
 from django.urls import reverse
 from rest_framework import status
 
 from apps.checker_board.factories import BoardFactory, MissionFactory, ActionFactory
-from apps.checker_board.models import Cycle
+from apps.checker_board.models import Period
 from core.const import DEFAULT_MISSION_COUNT
 from core.factories import AccountFactory
 from core.tests import BaseAPITestCase
@@ -270,7 +272,7 @@ class ActionViewTest(CheckerBoardBaseTestCase):
         data = {
             "title": "달리기",
             "mission_id": self.missions[0].id,
-            "cycle": Cycle.ONCE,
+            "period": Period.ONCE,
             "goal_unit": 100,
             "action_unit": 10,
             "unit_name": "km",
@@ -296,7 +298,7 @@ class ActionViewTest(CheckerBoardBaseTestCase):
             data={
                 "title": "달리기",
                 "mission_id": self.missions[0].id,
-                "cycle": Cycle.ONCE,
+                "period": Period.ONCE,
                 "goal_unit": 100,
                 "action_unit": 10,
                 "unit_name": "km",
@@ -342,3 +344,95 @@ class ActionViewTest(CheckerBoardBaseTestCase):
     def test_delete_destroy_unauthenticated(self):
         response = self.client.delete(path=f"{self.detail_url}")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class StatisticsTest(CheckerBoardBaseTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+    def test_update_total_percentage(self):
+        """action.current_unit / action.goal_unit * action_period / total_period"""
+
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.DAILY
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+        self.board.update_total_percentage(action)
+
+        self.assertEqual(self.board.total_percentage, 2.0)
+
+    def test_update_total_percentage_twice(self):
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.DAILY
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+
+        self.board.update_total_percentage(action)
+        self.board.update_total_percentage(action)
+
+        self.assertEqual(self.board.total_percentage, 4)
+
+    def test_update_total_percentage_once(self):
+
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.ONCE
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+        self.board.update_total_percentage(action)
+        self.assertEqual(self.board.total_percentage, 2)
+
+    def test_update_total_percentage_weekly(self):
+
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.WEEKLY
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+        self.board.update_total_percentage(action)
+        self.assertEqual(self.board.total_percentage, 14)
+
+    def test_update_total_percentage_monthly(self):
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.MONTHLY
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+        self.board.update_total_percentage(action)
+        self.assertEqual(self.board.total_percentage, 60)
+
+    def test_update_total_percentage_yearly(self):
+        action = self.actions[0][0]
+
+        action.current_unit = 2
+        action.goal_unit = 10
+        action.period = Period.YEARLY
+        total_period = timedelta(days=10)
+
+        self.board.start_at = datetime.today()
+        self.board.end_at = self.board.start_at + total_period
+        self.board.update_total_percentage(action)
+        self.assertEqual(self.board.total_percentage, 730)
