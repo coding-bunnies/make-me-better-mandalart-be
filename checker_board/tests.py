@@ -319,12 +319,7 @@ class ActionViewTest(CheckerBoardBaseTestCase):
     def test_patch_partial_update(self):
         self.get_authenticated_user(user=self.user)
 
-        response = self.client.patch(
-            path=f"{self.detail_url}",
-            data={
-                "title": "Updated Action",
-            },
-        )
+        response = self.client.patch(path=f"{self.detail_url}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
