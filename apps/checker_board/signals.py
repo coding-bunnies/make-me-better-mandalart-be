@@ -7,7 +7,7 @@ from apps.checker_board.models import Action, DailyStatistics
 
 
 @receiver(post_save, sender=Action)
-def my_handler(sender, **kwargs):
+def update_daily_statistics(sender, **kwargs):
     instance = kwargs.get("instance")
 
     board = instance.board
@@ -24,7 +24,7 @@ def my_handler(sender, **kwargs):
 
 
 @receiver(post_save, sender=Action)
-def my_handler(sender, **kwargs):
+def update_total_statistics(sender, **kwargs):
     instance = kwargs.get("instance")
     board = instance.board
 
