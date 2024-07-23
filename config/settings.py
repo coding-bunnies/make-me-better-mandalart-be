@@ -167,7 +167,9 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     "SESSION_LOGIN": False,
     "REGISTER_SERIALIZER": "apps.auth.serializers.AuthRegisterSerializer",
+    "LOGIN_SERIALIZER": "apps.auth.serializers.AuthLoginSerializer",
 }
+
 
 AUTH_USER_MODEL = "auth_system.Account"
 AUTHENTICATION_METHOD = "email"
