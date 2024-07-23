@@ -63,6 +63,7 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
     "drf_spectacular",
     "django_extensions",
+    "simple_history",
 ]
 
 
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -158,6 +160,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
@@ -168,13 +175,12 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     "SESSION_LOGIN": False,
     "REGISTER_SERIALIZER": "apps.auth.serializers.AuthRegisterSerializer",
-    "LOGIN_SERIALIZER": "apps.auth.serializers.AuthLoginSerializer",
 }
 
 
 AUTH_USER_MODEL = "auth_system.Account"
-AUTHENTICATION_METHOD = "email"
-
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
 SPECTACULAR_SETTINGS = {
     "TITLE": "Checker Board API",
     "DESCRIPTION": "만다라트에서 영감을 받은 체크리스트 앱 API",

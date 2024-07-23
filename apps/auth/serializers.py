@@ -17,7 +17,3 @@ class AuthRegisterSerializer(RegisterSerializer):
                 _("A user is already registered with this e-mail address."),
             )
         return email
-
-
-class AuthLoginSerializer(LoginSerializer):
-    email = serializers.EmailField(required=True, allow_blank=True)
