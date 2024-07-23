@@ -346,7 +346,7 @@ class ActionViewTest(CheckerBoardBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class BoardTest(CheckerBoardBaseTestCase):
+class StatisticsTest(CheckerBoardBaseTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -365,7 +365,7 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
 
-        self.assertEqual(self.board.total_percentage, 0.02)
+        self.assertEqual(self.board.total_percentage, 2.0)
 
     def test_update_total_percentage_twice(self):
         action = self.actions[0][0]
@@ -381,7 +381,7 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.update_total_percentage(action)
         self.board.update_total_percentage(action)
 
-        self.assertEqual(self.board.total_percentage, 0.04)
+        self.assertEqual(self.board.total_percentage, 4)
 
     def test_update_total_percentage_once(self):
 
@@ -395,7 +395,7 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.start_at = datetime.today()
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
-        self.assertEqual(self.board.total_percentage, 0.02)
+        self.assertEqual(self.board.total_percentage, 2)
 
     def test_update_total_percentage_weekly(self):
 
@@ -409,7 +409,7 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.start_at = datetime.today()
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
-        self.assertEqual(self.board.total_percentage, 0.14)
+        self.assertEqual(self.board.total_percentage, 14)
 
     def test_update_total_percentage_monthly(self):
         action = self.actions[0][0]
@@ -422,7 +422,7 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.start_at = datetime.today()
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
-        self.assertEqual(self.board.total_percentage, 0.6)
+        self.assertEqual(self.board.total_percentage, 60)
 
     def test_update_total_percentage_yearly(self):
         action = self.actions[0][0]
@@ -435,4 +435,4 @@ class BoardTest(CheckerBoardBaseTestCase):
         self.board.start_at = datetime.today()
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
-        self.assertEqual(self.board.total_percentage, 2.0)
+        self.assertEqual(self.board.total_percentage, 730)

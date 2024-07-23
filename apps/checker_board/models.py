@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 from simple_history.models import HistoricalRecords
@@ -15,7 +17,7 @@ class Board(TimeStamped):
     )
     daily_goal = models.PositiveIntegerField(help_text="일일 목표치", default=0)
     total_percentage = models.DecimalField(
-        help_text="전체 달성률", default=0, max_digits=3, decimal_places=2
+        help_text="전체 달성률", default=0, max_digits=7, decimal_places=4
     )
     start_at = models.DateField()
     end_at = models.DateField()
@@ -30,10 +32,17 @@ class Board(TimeStamped):
 
     def update_total_percentage(self, action):
         total_period = (self.end_at - self.start_at).days
-        action_period = action.period or 1
+        action_period = action.period.value or 1
 
-        self.total_percentage += (
-            action.current_unit / action.goal_unit * action_period / total_period
+        self.total_percentage += Decimal(
+            round(
+                action.current_unit
+                / action.goal_unit
+                * action_period
+                / total_period
+                * 100,
+                4,
+            )
         )
         self.save()
 
