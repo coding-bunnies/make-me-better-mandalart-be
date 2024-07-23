@@ -30,14 +30,17 @@ class ActionSerializer(serializers.ModelSerializer):
         model = Action
         fields = (
             "id",
-            "title",
             "mission_id",
+            "position",
+            "title",
             "cycle",
             "goal_unit",
             "action_unit",
-            "unit_name",
+            "current_unit",
             "achievement",
-            "position",
+            "unit_name",
+            "deleted",
+            "completed_at",
         )
 
 
