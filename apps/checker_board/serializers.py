@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from checker_board.models import Board, Mission, Action
+from apps.checker_board.models import Board, Mission, Action
 
 
 class BoardSerializer(serializers.ModelSerializer):
@@ -30,13 +30,17 @@ class ActionSerializer(serializers.ModelSerializer):
         model = Action
         fields = (
             "id",
-            "title",
             "mission_id",
+            "position",
+            "title",
             "cycle",
             "goal_unit",
             "action_unit",
-            "unit_name",
+            "current_unit",
             "achievement",
+            "unit_name",
+            "deleted",
+            "completed_at",
         )
 
 

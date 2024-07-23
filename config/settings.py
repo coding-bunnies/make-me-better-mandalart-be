@@ -38,7 +38,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -62,12 +62,14 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "drf_spectacular",
+    "django_extensions",
+    "simple_history",
 ]
 
 
 CUSTOM_APPS = [
-    "auth",
-    "checker_board",
+    "apps.auth",
+    "apps.checker_board",
     "core",
 ]
 
@@ -82,6 +84,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -110,7 +113,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db_data/db.sqlite3",
     }
 }
 
@@ -157,6 +160,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
@@ -166,12 +174,13 @@ REST_FRAMEWORK = {
 
 REST_AUTH = {
     "SESSION_LOGIN": False,
-    "REGISTER_SERIALIZER": "auth.serializers.AuthRegisterSerializer",
+    "REGISTER_SERIALIZER": "apps.auth.serializers.AuthRegisterSerializer",
 }
 
-AUTH_USER_MODEL = "auth_system.Account"
-AUTHENTICATION_METHOD = "email"
 
+AUTH_USER_MODEL = "auth_system.Account"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
 SPECTACULAR_SETTINGS = {
     "TITLE": "Checker Board API",
     "DESCRIPTION": "만다라트에서 영감을 받은 체크리스트 앱 API",
@@ -179,4 +188,4 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")

@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from checker_board.views import BoardView, MissionView, ActionView
+from apps.checker_board.views import BoardView, MissionView, ActionView
 
 router = DefaultRouter()
 router.register(r"boards", BoardView, basename="board")
