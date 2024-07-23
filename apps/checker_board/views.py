@@ -32,10 +32,6 @@ class MissionView(ModelViewSet):
 
 
 class ActionView(ModelViewSet):
-    """
-    TODO: 전체 기간보다 action의 period가 더 크면 막는 validation 넣기
-    """
-
     serializer_class = ActionSerializer
     queryset = Action.objects.all()
     permission_classes = (IsAuthenticated,)

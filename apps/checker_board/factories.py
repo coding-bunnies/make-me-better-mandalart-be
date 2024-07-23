@@ -4,7 +4,7 @@ from datetime import timedelta
 import factory
 from factory.django import DjangoModelFactory
 
-from apps.checker_board.models import Board, Mission, Action, Period
+from apps.checker_board.models import Board, Mission, Cycle, Action
 
 
 class BoardFactory(DjangoModelFactory):
@@ -33,7 +33,7 @@ class ActionFactory(DjangoModelFactory):
 
     title = factory.Faker("name")
     mission = factory.SubFactory(MissionFactory)
-    period = factory.Faker("random_element", elements=Period.values)
+    cycle = factory.Faker("random_element", elements=Cycle.values)
     completed_at = factory.Faker("date_time_this_decade", tzinfo=None)
     goal_unit = factory.Faker("random_int", min=100, max=1000)
     action_unit = factory.Faker("random_int", min=1, max=10)

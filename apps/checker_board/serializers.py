@@ -5,8 +5,6 @@ from apps.checker_board.models import Board, Mission, Action
 
 class BoardSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    achievement = serializers.IntegerField(read_only=True)
-    deleted = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Board
@@ -35,7 +33,7 @@ class ActionSerializer(serializers.ModelSerializer):
             "mission_id",
             "position",
             "title",
-            "period",
+            "cycle",
             "goal_unit",
             "action_unit",
             "current_unit",
@@ -69,6 +67,5 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
             "start_at",
             "end_at",
             "missions",
-            "daily_goal",
-            "total_percentage",
+            "achievement",
         )
