@@ -1,5 +1,6 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 from core.models import TimeStamped
 
@@ -12,6 +13,7 @@ class Board(TimeStamped):
         on_delete=models.CASCADE,
         related_name="boards",
     )
+    daily_goal = models.PositiveIntegerField(default=0)
     achievement = models.PositiveIntegerField(default=0)
     start_at = models.DateField()
     end_at = models.DateField()
@@ -71,6 +73,7 @@ class Action(TimeStamped):
     achievement = models.PositiveIntegerField(default=0)
     unit_name = models.CharField(max_length=8)
     position = models.PositiveIntegerField(null=True, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.title
