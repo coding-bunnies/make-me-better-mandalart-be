@@ -11,5 +11,5 @@
 venv/
 staticfiles/
 
-db.sqlite3
+db_data/db.sqlite3
 .env

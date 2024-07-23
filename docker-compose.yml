@@ -31,6 +31,7 @@ services:
         source: ./apps/
         target: /make-me-better-mandalart-be/apps/
       - static_data:/make-me-better-mandalart-be/static
+      - db_data:/make-me-better-mandalart-be/db_data
     ports:
       - '8000:8000'
     command:

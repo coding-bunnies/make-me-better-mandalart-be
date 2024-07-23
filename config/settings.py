@@ -62,6 +62,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "drf_spectacular",
+    "django_extensions",
 ]
 
 
@@ -110,7 +111,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db_data/db.sqlite3",
     }
 }
 

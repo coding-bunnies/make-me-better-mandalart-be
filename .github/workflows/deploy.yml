@@ -28,4 +28,4 @@ jobs:
             git pull
             echo "< pulled completed >"
             source ./.venv/bin/activate
-            docker compose up -d
+            docker compose up -d --build
