@@ -1,10 +1,10 @@
 from django.urls import reverse
 from rest_framework import status
 
-from auth.factories import AccountFactory
-from checker_board.factories import BoardFactory, MissionFactory, ActionFactory
+from apps.checker_board.factories import BoardFactory, MissionFactory, ActionFactory
 from apps.checker_board.models import Cycle
 from core.const import DEFAULT_MISSION_COUNT
+from core.factories import AccountFactory
 from core.tests import BaseAPITestCase
 
 

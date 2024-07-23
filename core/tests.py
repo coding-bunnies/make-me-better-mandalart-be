@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 from core.factories import AccountFactory
 
 if typing:
-    from auth.models import Account
+    from apps.auth.models import Account
 
 
 # Create your tests here.
