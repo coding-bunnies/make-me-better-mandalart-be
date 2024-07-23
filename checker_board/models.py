@@ -52,6 +52,12 @@ class Cycle(models.TextChoices):
 
 class Action(TimeStamped):
     title = models.CharField(max_length=16)
+    board = models.ForeignKey(
+        Board,
+        on_delete=models.CASCADE,
+        related_name="actions",
+        null=True,
+    )
     mission = models.ForeignKey(
         Mission,
         on_delete=models.CASCADE,
@@ -64,6 +70,7 @@ class Action(TimeStamped):
     current_unit = models.PositiveIntegerField(default=0)
     achievement = models.PositiveIntegerField(default=0)
     unit_name = models.CharField(max_length=8)
+    position = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -72,6 +79,7 @@ class Action(TimeStamped):
         db_table = "action"
         verbose_name = "Action"
         verbose_name_plural = "Actions"
+        unique_together = ("board", "position")
 
     def increase_achievement(self):
         self.current_unit += self.action_unit

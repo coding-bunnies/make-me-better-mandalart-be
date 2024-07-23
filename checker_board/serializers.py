@@ -37,6 +37,7 @@ class ActionSerializer(serializers.ModelSerializer):
             "action_unit",
             "unit_name",
             "achievement",
+            "position",
         )
 
 
