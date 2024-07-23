@@ -1,7 +1,7 @@
 import factory
 from factory.django import DjangoModelFactory
 
-from auth.models import Account
+from apps.auth.models import Account
 
 
 class AccountFactory(DjangoModelFactory):

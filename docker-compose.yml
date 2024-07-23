@@ -28,8 +28,8 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ./
-        target: /make-me-better-mandalart-be
+        source: ./apps/
+        target: /make-me-better-mandalart-be/apps/
       - static_data:/make-me-better-mandalart-be/static
     ports:
       - '8000:8000'
@@ -37,6 +37,8 @@ services:
       - bash
       - -c
       - |
+        pip install requirements.txt
+        python manage.py migrate
         python manage.py collectstatic --noinput
         gunicorn --bind 0:8000 config.wsgi:application
 

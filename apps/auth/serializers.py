@@ -3,7 +3,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from auth.models import Account
+from apps.auth.models import Account
 
 
 class AuthRegisterSerializer(RegisterSerializer):

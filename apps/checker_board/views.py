@@ -3,12 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from checker_board.models import Board, Mission, Action
-from checker_board.serializers import (
+from apps.checker_board.models import Board, Mission, Action
+from apps.checker_board.serializers import (
     BoardSerializer,
+    BoardRetrieveSerializer,
     MissionSerializer,
     ActionSerializer,
-    BoardRetrieveSerializer,
 )
 
 

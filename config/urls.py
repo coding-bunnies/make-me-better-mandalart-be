@@ -23,22 +23,24 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    # TODO: Add the url 'api' to the urlpatterns list
-    path("auth/", include("dj_rest_auth.urls")),
-    path("auth/signup/", include("dj_rest_auth.registration.urls")),
-    path("checker/", include("checker_board.urls")),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    # Optional UI:
+
+api_urlpatterns = [
+    path("auth/", include("apps.auth.urls")),
+    path("checker/", include("apps.checker_board.urls")),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/schema/swagger-ui/",
+        "schema/swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/schema/redoc/",
+        "schema/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+]
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include(api_urlpatterns)),
 ]

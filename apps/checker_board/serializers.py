@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from checker_board.models import Board, Mission, Action
+from apps.checker_board.models import Board, Mission, Action
 
 
 class BoardSerializer(serializers.ModelSerializer):

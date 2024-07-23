@@ -66,8 +66,8 @@ THIRD_PARTY_APPS = [
 
 
 CUSTOM_APPS = [
-    "auth",
-    "checker_board",
+    "apps.auth",
+    "apps.checker_board",
     "core",
 ]
 
@@ -166,7 +166,7 @@ REST_FRAMEWORK = {
 
 REST_AUTH = {
     "SESSION_LOGIN": False,
-    "REGISTER_SERIALIZER": "auth.serializers.AuthRegisterSerializer",
+    "REGISTER_SERIALIZER": "apps.auth.serializers.AuthRegisterSerializer",
 }
 
 AUTH_USER_MODEL = "auth_system.Account"
@@ -179,4 +179,4 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
