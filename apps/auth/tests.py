@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from auth.factories import AccountFactory
+from apps.auth.factories import AccountFactory
 
 
 # Create your tests here.

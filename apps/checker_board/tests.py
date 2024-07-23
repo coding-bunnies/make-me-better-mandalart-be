@@ -1,10 +1,10 @@
 from django.urls import reverse
 from rest_framework import status
 
-from auth.factories import AccountFactory
-from checker_board.factories import BoardFactory, MissionFactory, ActionFactory
-from checker_board.models import Cycle
+from apps.checker_board.factories import BoardFactory, MissionFactory, ActionFactory
+from apps.checker_board.models import Cycle
 from core.const import DEFAULT_MISSION_COUNT
+from core.factories import AccountFactory
 from core.tests import BaseAPITestCase
 
 
@@ -319,12 +319,7 @@ class ActionViewTest(CheckerBoardBaseTestCase):
     def test_patch_partial_update(self):
         self.get_authenticated_user(user=self.user)
 
-        response = self.client.patch(
-            path=f"{self.detail_url}",
-            data={
-                "title": "Updated Action",
-            },
-        )
+        response = self.client.patch(path=f"{self.detail_url}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

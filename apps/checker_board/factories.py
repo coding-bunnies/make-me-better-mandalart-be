@@ -4,7 +4,7 @@ from datetime import timedelta
 import factory
 from factory.django import DjangoModelFactory
 
-from checker_board.models import Board, Mission, Cycle, Action
+from apps.checker_board.models import Board, Mission, Cycle, Action
 
 
 class BoardFactory(DjangoModelFactory):
