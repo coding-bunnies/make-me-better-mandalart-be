@@ -7,6 +7,7 @@ class BoardSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     achievement = serializers.IntegerField(read_only=True)
     deleted = serializers.DateTimeField(read_only=True)
+    total_percentage = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Board
