@@ -1,9 +1,14 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from django.urls import reverse
 from rest_framework import status
 
-from apps.checker_board.factories import BoardFactory, MissionFactory, ActionFactory
+from apps.checker_board.factories import (
+    BoardFactory,
+    MissionFactory,
+    ActionFactory,
+    DailyStatisticsFactory,
+)
 from apps.checker_board.models import Period
 from core.const import DEFAULT_MISSION_COUNT
 from core.factories import AccountFactory
@@ -19,7 +24,9 @@ class CheckerBoardBaseTestCase(BaseAPITestCase):
             size=DEFAULT_MISSION_COUNT, board=cls.board
         )
         cls.actions = [
-            ActionFactory.create_batch(size=DEFAULT_MISSION_COUNT, mission=mission)
+            ActionFactory.create_batch(
+                size=DEFAULT_MISSION_COUNT, mission=mission, board=mission.board
+            )
             for mission in cls.missions
         ]
 
@@ -384,7 +391,6 @@ class StatisticsTest(CheckerBoardBaseTestCase):
         self.assertEqual(self.board.total_percentage, 4)
 
     def test_update_total_percentage_once(self):
-
         action = self.actions[0][0]
 
         action.current_unit = 2
@@ -398,7 +404,6 @@ class StatisticsTest(CheckerBoardBaseTestCase):
         self.assertEqual(self.board.total_percentage, 2)
 
     def test_update_total_percentage_weekly(self):
-
         action = self.actions[0][0]
 
         action.current_unit = 2
@@ -436,3 +441,34 @@ class StatisticsTest(CheckerBoardBaseTestCase):
         self.board.end_at = self.board.start_at + total_period
         self.board.update_total_percentage(action)
         self.assertEqual(self.board.total_percentage, 730)
+
+
+class DailyStatisticsViewTest(CheckerBoardBaseTestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        target_list = [datetime.today() - timedelta(days=i) for i in range(3)]
+        print(f"{target_list=}")
+        [
+            DailyStatisticsFactory(board=cls.board, target_date=_date)
+            for _date in target_list
+        ]
+        cls.url = reverse("daily_statistics")
+
+    def test_get_retrieve(self):
+        self.get_authenticated_user(user=self.user)
+
+        response = self.client.get(self.url, {"board_id": self.board.id})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_retrieve_unauthenticated(self):
+        response = self.client.get(self.url, {"board_id": self.board.id})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_retrieve_another_user(self):
+        user = AccountFactory()
+        self.get_authenticated_user(user=user)
+
+        response = self.client.get(self.url, {"board_id": self.board.id})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
