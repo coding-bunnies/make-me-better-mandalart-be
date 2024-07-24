@@ -1,15 +1,20 @@
+from datetime import datetime, date
+
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.checker_board.models import Board, Mission, Action
+from apps.checker_board.models import Board, Mission, Action, DailyStatistics
+from apps.checker_board.permissions import IsMeOnly
 from apps.checker_board.serializers import (
     BoardSerializer,
     BoardRetrieveSerializer,
     MissionSerializer,
     ActionSerializer,
+    DailyStatisticsSerializer,
 )
 
 
@@ -58,3 +63,18 @@ class ActionView(ModelViewSet):
         instance.increase_achievement()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class DailyStatisticsView(RetrieveAPIView):
+    permission_classes = (IsMeOnly,)
+    serializer_class = DailyStatisticsSerializer
+    queryset = DailyStatistics.objects.all()
+
+    lookup_field = "board_id"
+    lookup_url_kwarg = "board_id"
+
+    def get_object(self):
+        return self.queryset.get(
+            board_id=self.request.query_params.get("board_id"),
+            target_date=date.today(),
+        )

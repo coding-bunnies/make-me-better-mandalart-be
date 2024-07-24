@@ -121,7 +121,10 @@ class DailyStatistics(TimeStamped):
 
     goal = models.PositiveIntegerField(help_text="일일 목표치", default=0)
     achievement = models.PositiveIntegerField(help_text="실제 달성 횟수", default=0)
-    percentage = models.PositiveIntegerField(help_text="일일 달성률", default=0)
+    percentage = models.DecimalField(
+        help_text="일일 달성률", default=0, max_digits=7, decimal_places=4
+    )
+    target_date = models.DateField()
 
     class Meta:
         db_table = "statistics"

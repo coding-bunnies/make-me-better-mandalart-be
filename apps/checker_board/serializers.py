@@ -72,3 +72,12 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
             "daily_goal",
             "total_percentage",
         )
+
+
+class DailyStatisticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyStatistics
+        fields = (
+            "id",
+            "percentage",
+        )
