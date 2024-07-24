@@ -24,6 +24,9 @@ class BoardView(ModelViewSet):
     queryset = Board.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
     @extend_schema(responses=BoardRetrieveSerializer)
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -33,12 +36,7 @@ class BoardView(ModelViewSet):
     @extend_schema(responses=BoardRetrieveSerializer)
     @action(detail=True, methods=["get"], url_path="my", url_name="my-board")
     def my_board_detail(self, request, *args, **kwargs):
-        queryset = (
-            self.get_queryset()
-            .filter(board__user=request.user)
-            .order_by("-created_at")
-            .first()
-        )
+        queryset = self.get_queryset().order_by("-created_at").first()
         serializer = self.get_serializer(queryset)
         return Response(serializer.data)
 
@@ -48,6 +46,9 @@ class MissionView(ModelViewSet):
     queryset = Mission.objects.all()
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        return self.queryset.filter(board__user=self.request.user)
+
 
 class ActionView(ModelViewSet):
     """
@@ -55,8 +56,11 @@ class ActionView(ModelViewSet):
     """
 
     serializer_class = ActionSerializer
-    queryset = Action.objects.all()
     permission_classes = (IsAuthenticated,)
+    queryset = Action.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(board__user=self.request.user)
 
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()

@@ -24,7 +24,9 @@ class CheckerBoardBaseTestCase(BaseAPITestCase):
             size=DEFAULT_MISSION_COUNT, board=cls.board
         )
         cls.actions = [
-            ActionFactory.create_batch(size=DEFAULT_MISSION_COUNT, mission=mission)
+            ActionFactory.create_batch(
+                size=DEFAULT_MISSION_COUNT, mission=mission, board=mission.board
+            )
             for mission in cls.missions
         ]
 
