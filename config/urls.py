@@ -41,6 +41,6 @@ api_urlpatterns = [
 ]
 
 urlpatterns = [
+    path("", include(api_urlpatterns)),
     path("admin/", admin.site.urls),
-    path("api/", include(api_urlpatterns)),
 ]

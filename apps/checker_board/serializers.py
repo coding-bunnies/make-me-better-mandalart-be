@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.checker_board.models import Board, Mission, Action
+from apps.checker_board.models import Board, Mission, Action, DailyStatistics
 
 
 class BoardSerializer(serializers.ModelSerializer):
@@ -71,4 +71,13 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
             "missions",
             "daily_goal",
             "total_percentage",
+        )
+
+
+class DailyStatisticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyStatistics
+        fields = (
+            "id",
+            "percentage",
         )
