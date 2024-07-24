@@ -1,4 +1,5 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -22,6 +23,18 @@ class BoardView(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = BoardRetrieveSerializer(instance)
+        return Response(serializer.data)
+
+    @extend_schema(responses=BoardRetrieveSerializer)
+    @action(detail=True, methods=["get"], url_path="my", url_name="my-board")
+    def my_board_detail(self, request, *args, **kwargs):
+        queryset = (
+            self.get_queryset()
+            .filter(board__user=request.user)
+            .order_by("-created_at")
+            .first()
+        )
+        serializer = self.get_serializer(queryset)
         return Response(serializer.data)
 
 
